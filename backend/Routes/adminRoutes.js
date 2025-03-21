@@ -1,4 +1,5 @@
 import express from "express";
+import { isAuthenticated, authorizeRoles } from "../Middlewares/auth.js";
 import {
   addVaccine,
   getAllUsers,
@@ -7,13 +8,20 @@ import {
   deleteVaccine,
   approveDisease,
   assignLocationsToDisease,
-  deleteDisease
+  deleteDisease,
+  addDisease,
 } from "../Controllers/Admin.js";
 
 const router = express.Router();
 
+// Protect all admin routes (Only logged-in users with "admin" role can access)
+router.use(isAuthenticated, authorizeRoles("admin"));
+
 // Route to add a new vaccine
 router.post("/vaccines", addVaccine);
+
+// Route to add a new disease
+router.post("/diseases", addDisease);
 
 // Route to approve a vaccine
 router.put("/vaccines/approve/:id", approveVaccine);
